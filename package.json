@@ -5,7 +5,11 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts"
+    "dev": "set NODE_ENV=development && nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts",
+    "buildSDK": "cd src/vendor/ow-ban-list && npm install && npm run build",
+    "buildAll": "npm run buildSDK && tsc",
+    "build": "tsc",
+    "serve": "set NODE_ENV=production && node ./build/server.js"
   },
   "author": "Untitled",
   "license": "ISC",

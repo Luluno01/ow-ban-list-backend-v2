@@ -3,11 +3,14 @@
     "module": "commonjs",
     "target": "es2017",
     "noImplicitAny": false,
-    "outDir": "./build",
+    "outDir": "build",
     "sourceMap": true,
     "resolveJsonModule": true
   },
   "include": [
-    "./src/**/*"
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/vendor/**/*"
   ]
 }

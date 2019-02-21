@@ -2,8 +2,10 @@
 import * as Koa from 'koa'
 import * as Router from "koa-router"
 /* Config */
-import * as config from '../config.json'
-import * as loggerConfig from '../log4js.json'
+// import * as config from '../config.json'
+// import * as loggerConfig from '../log4js.json'
+const config = require('../config.json')
+const loggerConfig = require('../log4js.json')
 /* Standard node lib */
 import * as path from 'path'
 import * as fs from 'fs'
