@@ -1,0 +1,24 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console"
+    },
+    "app": {
+      "type": "dateFile",
+      "filename": "logs/app/",
+      "pattern": "app-yyyy-MM-dd.log",
+      "alwaysIncludePattern": true
+    },
+    "http": {
+      "type": "dateFile",
+      "filename": "logs/http/",
+      "pattern": "http-yyyy-MM-dd.log",
+      "alwaysIncludePattern": true
+    }
+  },
+  "categories": {
+    "default": { "appenders": [ "console" ], "level": "debug" },
+    "app": { "appenders": [ "console", "app" ], "level": "debug" },
+    "http": { "appenders": [ "console", "http" ], "level": "debug" }
+  }
+}

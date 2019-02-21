@@ -1,0 +1,3 @@
+[submodule "src/vendor/ow-ban-list"]
+	path = src/vendor/ow-ban-list
+	url = https://github.com/Luluno01/ow-ban-list.git
