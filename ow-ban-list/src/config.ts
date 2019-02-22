@@ -1,0 +1,1 @@
+export const BAN_INDEX = 'http://bbs.ow.blizzard.cn/forum.php?mod=viewthread&tid=619963&extra=page%3D1'

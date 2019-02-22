@@ -1,0 +1,27 @@
+{
+  "name": "ow-ban-list",
+  "version": "1.0.0",
+  "description": "Get ban lists from Overwatch BBS (China)",
+  "main": "build/fetch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "buildFile": "node scripts/buildFile.js"
+  },
+  "keywords": [
+    "Overwatch",
+    "OW",
+    "OW ban list"
+  ],
+  "author": "Untitled",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.10",
+    "@types/node-fetch": "^2.1.4",
+    "typescript": "^3.3.1"
+  }
+}
