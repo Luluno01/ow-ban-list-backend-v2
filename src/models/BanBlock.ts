@@ -5,6 +5,7 @@ import { TAnnouncement } from './Announcement'
 import { fetchBanBlocks as _fetchBanBlocks } from '../../ow-ban-list/build/helpers'
 import hash from '../helpers/hash'
 import escapeLike from '../helpers/escapeLike'
+import { formatError } from '../helpers/formatError'
 
 
 const BanBlock = sequelize.define('banBlock', {
@@ -42,22 +43,28 @@ export async function sync() {
   let [ blocks, annDate ] = await _fetchBanBlocks(ann)
   return await sequelize.transaction()
   .then(async t => {
-    let createdBlocks: TBanBlock[] = []
-    await Promise.all(blocks.map(async block => {
-      try {
-        createdBlocks.push(await BanBlock.create({
+    let createdBlocks: TBanBlock[]
+    try {
+      createdBlocks = await BanBlock.bulkCreate(blocks.map(block => {
+        return {
           ...block,
           hash: hash(JSON.stringify(block.battleTags)),
           annId: ann.id
-        } as any, { transaction: t }) as TBanBlock)
-      } catch(err) {
-        // pass
-      }
-    }).concat([ (async () => {
+        }
+      }), { transaction: t }) as TBanBlock[]
       // Update the announcement release date
       await ann.update({ date: annDate }, { where: { id: ann.id }, transaction: t })
-    })() ]))
-    await t.commit()
+      await t.commit()
+    } catch(err) {
+      (err as any).blocks = blocks.map(block => {
+        return {
+          ...block,
+          hash: hash(JSON.stringify(block.battleTags)),
+          annId: ann.id
+        }
+      })
+      throw err
+    }
     return createdBlocks
   })
 };

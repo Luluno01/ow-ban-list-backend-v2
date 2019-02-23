@@ -1,6 +1,6 @@
-import SimpleController from "./SimpleController"
-import { Method } from "../global"
-import { Context } from "koa"
+import SimpleController from './SimpleController'
+import { Method } from '../global'
+import { Context } from 'koa'
 
 
 export default class Home extends SimpleController {

@@ -21,7 +21,7 @@ export const Announcement = sequelize.define('announcement', {
   }
 })
 
-BanBlock.belongsTo(Announcement, { as: 'ann' })
+BanBlock.belongsTo(Announcement, { as: 'ann', onDelete: 'cascade' })
 
 export default Announcement as TAnnouncement
 
@@ -46,14 +46,21 @@ export type TAnnouncement = typeof Announcement & {
 
 export async function sync() {
   // await Announcement.sync({ force: true })  // Re-create table
+  console.log('Fetching announcement index')
   let anns = await (Announcement as TAnnouncement).createIndex()  // Create announcements index
   await LastUpdate.setUpdate(anns.length, '')
-  // Pre-fetch ban blocks
+  console.log('Fetching ban blocks')
   try {
     let job = (new TaskQueue(anns.map(ann => {
       return retry(async function() {
-        await BanBlock.fetch(ann)
-        console.log(`Ban blocks for announcement (${ann.id}) fetched`)
+        console.log(`Fetching ban blocks for announcement ${ann.id}`)
+        try {
+          await BanBlock.fetch(ann)
+        } catch(err) {
+          console.error(`Failed to fetch ban blocks for announcement ${ann.id}: ${formatError(err)}`)
+          throw err
+        }
+        console.log(`Ban blocks for announcement ${ann.id} fetched`)
       }, 5)
     }), 10))
     await job.start()
@@ -63,6 +70,7 @@ export async function sync() {
       let err: Error | string = job.errs[errIndex[0]]
       console.error(`The first error is: ${err instanceof Error ? err.stack : err}`)
     }
+    console.log('Ban blocks fetched')
   } catch(err) {
     console.error(`Failed to pre-fetch ban blocks: ${err.stack}`)
   }
@@ -116,17 +124,25 @@ export async function sync() {
  */
 (Announcement as TAnnouncement).updateIndexAndFetch = async () => {
   try {
+    console.log('Fetching announcement index')
     const anns = await (Announcement as TAnnouncement).updateIndex()
+    console.log('Announcement index fetched')
+    console.log('Fetching ban blocks for new announcement(s)')
     for(let ann of anns) {
       try {
+        console.log(`Fetching ban blocks for announcement ${ann.id}`)
         await retry(async () => await ann.fetch(), 5)
+        console.log(`Ban block for announcement ${ann.id} fetched`)
       } catch(err) {
-        console.error(`Failed to fetch ban blocks for announcement ${ann.id}: ${formatError(err)}`)
+        console.error(`Failed to fetch ban blocks for announcement ${ann.id}`)
+        throw err
       }
     }
+    if(anns.length) console.log(`Announcements updated (${anns.map(ann => ann.id).join(', ')})`)
+    else console.log('No new announcements')
     return anns
   } catch(err) {
-    console.error(`Failed to update announcement index: ${formatError(err)}`)
+    console.error(`Failed to update announcement index`)
   }
 }
 

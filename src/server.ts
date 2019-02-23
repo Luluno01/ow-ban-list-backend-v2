@@ -10,7 +10,7 @@ const loggerConfig = require('../log4js.json')
 import * as path from 'path'
 import * as fs from 'fs'
 /* Helpers */
-import formatError from './helpers/formatError'
+import { formatError } from './helpers/formatError'
 /* Logger */
 import * as _log4js from 'koa-log4'
 import { Logger, Log4js } from 'log4js'
@@ -21,6 +21,7 @@ const log4js: Log4js & {
 import middlewares from './middlewares'
 /* Controller */
 import installControllers from './controllers'
+import { HttpError } from 'http-errors'
 
 
 /* Initialize logger */
@@ -45,6 +46,9 @@ const app = new Koa
 const router = new Router
 router.use(log4js.koaLogger(log4js.getLogger('http'), { level: 'auto' }))
 
+/* Add logger */
+app.context.logger = logger
+
 /* Load middlewares */
 for(let middleware of middlewares) router.use(middleware)
 
@@ -58,7 +62,8 @@ app.use(router.routes())
 app.listen(port)
 
 app.on('error', err => {
-  logger.error(`Server error: ${formatError(err)}`)
+  if(!(err instanceof HttpError)) logger.error(`Server error: ${formatError(err)}`)
+  else if((err.status || err.statusCode).toString().startsWith('5')) logger.error(`Server error: ${formatError(err)}`)
 })
 
 logger.info(`Server running on port ${port}`);
