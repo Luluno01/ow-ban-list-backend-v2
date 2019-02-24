@@ -1,17 +1,37 @@
-import SimpleController from './SimpleController'
+import { RouterController } from './RouterController'
 import { Method } from '../global'
 import { Context } from 'koa'
+import * as Router from 'koa-router'
 import MBan from '../models/BanBlock'
 
 
-export default class Ban extends SimpleController {
-  method: Method = 'get'
-  pattern: string = '/bans/:id(\\d+)'
-  async handler(ctx: Context) {
-    const id = parseInt(ctx.params.id)
-    ctx.assert(id, 400, 'Invalid ban block id')
-    const ban = await MBan.findByPk(id) as typeof MBan
-    ctx.assert(ban, 404, 'No such ban block')
-    ctx.body = ban.toJSON()
+const router = new Router
+
+router.get('/:id(\\d+)', async (ctx: Context) => {
+  const id = parseInt(ctx.params.id)
+  ctx.assert(id, 400, 'Invalid ban block id')
+  const ann = await MBan.findByPk(id) as typeof MBan
+  ctx.assert(ann, 404, 'No such ban block')
+  ctx.body = ann.toJSON()
+})
+
+router.get('/', async (ctx: Context) => {
+  ctx.assert('search' in ctx.query && ctx.query.search, 403, 'Ban blocks listing is available via searching only')
+  try {
+    let keyWords: string[] = JSON.parse(ctx.query.search)
+    for(let keyWord of keyWords) {
+      if(typeof keyWord != 'string' || !keyWord) throw new Error
+    }
+    let res = await MBan.search(keyWords)  // Results are limited to 100
+    ctx.body = res.map(r => {
+      return { ...r, date: r.date.getTime() }
+    })
+  } catch(err) {
+    ctx.throw(400, 'Bad searching key words')
   }
+})
+
+export default class Ban extends RouterController {
+  pattern: string = '/bans'
+  router: Router = router
 }

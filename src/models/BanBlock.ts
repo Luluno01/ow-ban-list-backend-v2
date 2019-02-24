@@ -29,7 +29,7 @@ type TBanBlock = typeof BanBlock & {
   updatedAt: Date
   fetch(ann: TAnnouncement): Promise<TBanBlock[]>
   toJSON(): object
-  search(keyWords: string[]): Promise<any>
+  search(keyWords: string[]): Promise<{ id: number, annId: number, date: Date }[]>
 }
 
 export async function sync() {
@@ -70,9 +70,10 @@ export async function sync() {
 };
 
 
-const SQL_BASE = 'SELECT distinct x."id", x."annId" FROM (SELECT "public"."banBlocks"."id", "public"."banBlocks"."annId", unnest("public"."banBlocks"."battleTags") tag FROM "public"."banBlocks") x WHERE '
-const CONDITION = 'lower(tag) LIKE ';
+const SQL_BASE = 'SELECT distinct x."id", x."annId", date FROM (SELECT "public"."banBlocks"."id", "public"."banBlocks"."annId", unnest("public"."banBlocks"."battleTags") tag, (SELECT "public"."announcements"."date" from "public"."announcements" WHERE "public"."announcements"."id" = "public"."banBlocks"."annId") FROM "public"."banBlocks") x WHERE '
+const CONDITION = 'lower(tag) LIKE '
+const ENDING = ' ORDER BY date DESC LIMIT 100;';
 (BanBlock as TBanBlock).search = async function search(keyWords: string[]) {
   let conditions = keyWords.map(keyWord => CONDITION + "'%" + escapeLike(keyWord.toLowerCase()) + "%' ESCAPE '\\'")
-  return await sequelize.query(SQL_BASE + conditions.join(` OR `) + ';', { type: sequelize.QueryTypes.SELECT })
+  return await sequelize.query(SQL_BASE + conditions.join(` OR `) + ENDING, { type: sequelize.QueryTypes.SELECT })
 }
