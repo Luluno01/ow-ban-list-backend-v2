@@ -18,7 +18,7 @@ const log4js: Log4js & {
   koaLogger(logger: Logger, options: string | Function | object): Koa.Middleware
 } = _log4js
 /* Middlewares */
-import middlewares from './middlewares'
+import installMiddlewares from './middlewares'
 /* Controller */
 import installControllers from './controllers'
 import { HttpError } from 'http-errors'
@@ -50,7 +50,7 @@ router.use(log4js.koaLogger(log4js.getLogger('http'), { level: 'auto' }))
 app.context.logger = logger
 
 /* Load middlewares */
-for(let middleware of middlewares) router.use(middleware)
+installMiddlewares(router)
 
 /* Install controllers */
 installControllers(router)
