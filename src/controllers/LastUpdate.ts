@@ -11,8 +11,8 @@ export default class LastUpdate extends SimpleController {
     let lastUpdate = await MLastUpdate.findByPk(1) as typeof MLastUpdate
     ctx.body = {
       announcementCount: lastUpdate.announcementCount,
-      err: lastUpdate.err,
-      date: lastUpdate.date
+      // err: lastUpdate.err,
+      date: lastUpdate.date.getTime()
     }
   }
 }

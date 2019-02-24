@@ -1,5 +1,4 @@
 import { RouterController } from './RouterController'
-import { Method } from '../global'
 import { Context } from 'koa'
 import * as Router from 'koa-router'
 import MBan from '../models/BanBlock'
@@ -19,9 +18,10 @@ router.get('/', async (ctx: Context) => {
   ctx.assert('search' in ctx.query && ctx.query.search, 403, 'Ban blocks listing is available via searching only')
   try {
     let keyWords: string[] = JSON.parse(ctx.query.search)
-    for(let keyWord of keyWords) {
-      if(typeof keyWord != 'string' || !keyWord) throw new Error
-    }
+    keyWords = keyWords.map(keyWord => {
+      if(typeof keyWord != 'string' || keyWord.match(/^\s*$/)) throw new Error
+      else return keyWord.trim()
+    })
     let res = await MBan.search(keyWords)  // Results are limited to 100
     ctx.body = res.map(r => {
       return { ...r, date: r.date.getTime() }
