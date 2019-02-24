@@ -1,8 +1,6 @@
 import { Context } from 'koa'
 
 
-export function init() {}
-
 export async function responseTime(ctx: Context, next: () => Promise<any>) {
   const start = Date.now()
   await next()

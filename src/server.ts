@@ -44,13 +44,14 @@ let port: number = parseInt(process.env.PORT) || config.port
 /* Initialize application */
 const app = new Koa
 const router = new Router
+app.context.config = config
 router.use(log4js.koaLogger(log4js.getLogger('http'), { level: 'auto' }))
 
 /* Add logger */
 app.context.logger = logger
 
 /* Load middlewares */
-installMiddlewares(router)
+installMiddlewares(app, router)
 
 /* Install controllers */
 installControllers(router)

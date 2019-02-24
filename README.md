@@ -4,9 +4,10 @@ Get the ban list from Overwatch BBS (China). Version 2.
 
 ## Requirements
 
-* `Node.js` runtime environment (`10.x` or above);
-* `npm` or other functionally equivalent package manager (used to install dependencies and build). `npm5` is recommended;
-* `PostgreSQL` (used to store the ban list).
+* `Node.js`: runtime environment (`10.x` or above);
+* `npm`: or other functionally equivalent package manager (used to install dependencies and build). `npm5` is recommended;
+* `PostgreSQL`: (used to store the ban list);
+* `Redis`: cache store, optional.
 
 ## APIs
 
@@ -114,9 +115,10 @@ The configuration files are `config.json`, `log4js.json` and `sequelize.config.j
 
 Configuration of the application.
 
-| Property | Type     | Description           |
-| -------- | -------- | --------------------- |
-| port     | `number` | Server listening port |
+| Property | Type      | Description                               |
+| -------- | --------- | ----------------------------------------- |
+| port     | `number`  | Server listening port                     |
+| cache    | `boolean` | Whether or not to use `Redis` for caching |
 
 ### `log4js.json`
 
@@ -129,3 +131,7 @@ Configuration for `Sequelize`. See [`Sequelize`](http://docs.sequelizejs.com/) f
 ### `CORS`
 
 This is an environment variable used to set valid origin(s) for cross-origin request. For example, `CORS=http://example.com,http://example.org` will set `Access-Control-Allow-Origin` and `Access-Control-Allow-Credentials` HTTP headers for the origins `http://example.com` and `http://example.org` so that responses to the requests from these two origins will not be blocked by the browser's CORS policy.
+
+### `RD_URL`
+
+`Redis` connection URL, used to specify the redis server to be used for caching. See npm package [`redis`](https://www.npmjs.com/package/redis#rediscreateclient) for more details.

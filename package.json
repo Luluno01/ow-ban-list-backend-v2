@@ -2,7 +2,7 @@
   "name": "ow-ban-list-backend",
   "version": "1.0.0",
   "description": "Overwatch ban list backend (standalone version, not for netlify)",
-  "main": "build/index.js",
+  "main": "build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "set NODE_ENV=development && nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts",
@@ -21,11 +21,13 @@
     "koa-router": "^7.4.0",
     "pg": "^7.8.1",
     "pg-hstore": "^2.3.2",
+    "redis": "^2.8.0",
     "sequelize": "^4.42.0"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "@types/koa-router": "^7.0.39",
+    "@types/redis": "^2.8.10",
     "@types/sequelize": "^4.27.37",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.2",
