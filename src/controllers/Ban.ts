@@ -2,11 +2,14 @@ import { RouterController } from './RouterController'
 import { Context } from 'koa'
 import * as Router from 'koa-router'
 import MBan from '../models/BanBlock'
-import getAndCache from '../helpers/getAndCache';
+import getAndCache from '../helpers/getAndCache'
 import LastUpdate from '../models/LastUpdate'
+import contentType from '../helpers/content-type'
 
 
 const router = new Router
+
+router.use(contentType())
 
 router.get('/:id(\\d+)', async (ctx: Context) => {
   const id = parseInt(ctx.params.id)
