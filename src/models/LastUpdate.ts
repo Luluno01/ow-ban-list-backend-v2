@@ -48,7 +48,8 @@ const CACHED_KEY = 'last-update'
 export async function sync() {
   // await LastUpdate.sync({ force: true })
   if(cache) {
-    await (await store.init()).set(CACHED_KEY, {
+    await store.init()
+    await store.set(CACHED_KEY, {
       announcementCount: 0,
       err: '',
       date: Date.now()
@@ -69,7 +70,8 @@ export async function sync() {
 ) => {
   err = formatError(err)
   if(cache) {
-    await (await store.init()).set(CACHED_KEY, { announcementCount, err, date: Date.now() })
+    await store.init()
+    await store.set(CACHED_KEY, { announcementCount, err, date: Date.now() })
   } else {
     let data = { announcementCount, err, date: new Date }
     let query = { where: { id: 1 }, defaults: data }
@@ -85,7 +87,8 @@ export async function sync() {
 
 (LastUpdate as TLastUpdate).getUpdate = async () => {
   if(cache) {
-    const lastUpdate = await (await store.init()).getParsed(CACHED_KEY)
+    await store.init()
+    const lastUpdate = await store.getParsed(CACHED_KEY)
     lastUpdate.date = new Date(lastUpdate.date)
     return lastUpdate
   } else return (await LastUpdate.findByPk(1)) as TLastUpdate
@@ -99,7 +102,8 @@ function getDateString(date?: Date) {
   let today = getDateString()
   if(!lastUpdate) {
     if(cache) {
-      lastUpdate = await (await store.init()).getParsed(CACHED_KEY) as LastUpdateData
+      await store.init()
+      lastUpdate = await store.getParsed(CACHED_KEY) as LastUpdateData
       return today != getDateString(new Date(lastUpdate.date))
     } else return today != getDateString((await (LastUpdate as TLastUpdate).getUpdate()).date)
   } else return today != getDateString(lastUpdate.date)
