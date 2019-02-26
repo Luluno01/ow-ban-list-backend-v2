@@ -131,7 +131,7 @@ export async function sync() {
     for(let ann of anns) {
       try {
         console.log(`Fetching ban blocks for announcement ${ann.id}`)
-        await retry(async () => await ann.fetch(), 5)
+        await (retry(async () => await ann.fetch(), 5)())
         console.log(`Ban block for announcement ${ann.id} fetched`)
       } catch(err) {
         console.error(`Failed to fetch ban blocks for announcement ${ann.id}`)

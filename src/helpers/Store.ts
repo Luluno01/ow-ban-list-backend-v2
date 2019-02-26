@@ -32,6 +32,7 @@ export class Store {
   }
 
   async init() {
+    if(this.client) return
     const client = this.client = await createClient(this.url)
     this._get = promisify(client.get).bind(client)
     this._set = promisify(client.set).bind(client)
@@ -50,7 +51,7 @@ export class Store {
   async getParsed(key: string) {
     let res = await this._get(key)
     if(res != null) {
-      return JSON.parse(res) as object
+      return JSON.parse(res)
     } else return null
   }
 
