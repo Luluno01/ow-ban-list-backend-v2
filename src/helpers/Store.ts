@@ -56,8 +56,8 @@ export class Store {
   }
 
   async set(key: string, value: Formatable | object, expire: number = 0) {
-    if(expire) await this._set(key, stringify(value), 'EX', expire)
-    return await this._set(key, stringify(value))
+    if(expire) return await this._set(key, stringify(value), 'EX', expire)
+    else return await this._set(key, stringify(value))
   }
 
   async del(key: string) {
