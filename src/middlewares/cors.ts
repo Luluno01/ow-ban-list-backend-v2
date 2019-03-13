@@ -17,7 +17,17 @@ export async function init(_: Koa, __: Router) {
 
 export async function cors(ctx: Context, next: () => Promise<any>) {
   const origin = ctx.get('Origin')
-  await next()
+  try {
+    await next()
+  } catch(err) {
+    if(CORS && CORS.includes(origin)) {
+      (ctx.logger as Logger).info(`Cross-origin request from origin ${origin}`)
+      err.headers = err.headers || {}
+      err.headers['Access-Control-Allow-Credentials'] = true
+      err.headers['Access-Control-Allow-Origin'] = origin
+    }
+    throw err
+  }
   if(CORS && CORS.includes(origin)) {
     (ctx.logger as Logger).info(`Cross-origin request from origin ${origin}`)
     ctx.set('Access-Control-Allow-Credentials', 'true')
