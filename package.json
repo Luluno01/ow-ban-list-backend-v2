@@ -22,13 +22,13 @@
     "pg": "^7.8.1",
     "pg-hstore": "^2.3.2",
     "redis": "^2.8.0",
-    "sequelize": "^4.42.0"
+    "sequelize": "^4.43.1"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "@types/koa-router": "^7.0.39",
     "@types/redis": "^2.8.10",
-    "@types/sequelize": "^4.27.37",
+    "@types/sequelize": "^4.27.47",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3"
